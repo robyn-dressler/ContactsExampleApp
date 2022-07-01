@@ -1,0 +1,9 @@
+﻿CREATE TABLE Contact (
+	ContactId INT PRIMARY KEY IDENTITY(1,1),
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+	EmailAddress NVARCHAR(255),
+	PhoneNumber NVARCHAR(15),
+	HomeAddress NVARCHAR(255),
+	DateOfBirth DATE
+);

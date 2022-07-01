@@ -1,0 +1,34 @@
+﻿@page "/contact/{contactId:int}"
+@using ContactsExampleApp.Model.View
+@using ContactsExampleApp.Services.Abstract
+@inject IContactService contactService
+
+<h3>Contact Details</h3>
+
+@if(notFound)
+{
+    <MatHeadline4>Could not find contact</MatHeadline4>
+}
+else if(contact != null)
+{
+    <ContactDetail Contact="contact" />
+}
+
+@code {
+    [Parameter]
+    public int ContactId { get; set; } = 0;
+
+    private ContactDisplayData? contact;
+
+    private bool notFound = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contact = await contactService.GetContact(ContactId);
+
+        if(contact == null)
+        {
+            notFound = true;
+        }
+    }
+}

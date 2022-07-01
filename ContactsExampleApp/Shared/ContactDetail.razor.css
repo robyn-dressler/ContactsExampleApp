@@ -1,0 +1,20 @@
+﻿.contact-details {
+    padding: 20px;
+}
+
+.contact-details-field {
+    margin-bottom: 10px;
+}
+
+.home-address {
+    width: 430px;
+}
+
+.notes {
+    width: 430px;
+}
+
+.contact-details-buttons {
+    display: inline-block;
+    margin-right: 10px;
+}

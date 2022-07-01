@@ -1,0 +1,83 @@
+﻿@using ContactsExampleApp.Model.View
+@using ContactsExampleApp.Services.Abstract
+@inject IContactService contactService
+@inject NavigationManager NavManager
+
+@if(Contact != null)
+{
+    <MatPaper Outlined="true" Rounded="true">
+        <div class="contact-details">
+            <div class="contact-details-field">
+                <MatTextField @bind-Value="@Contact.FirstName" Label="First Name" Outlined="true" />
+                <MatTextField @bind-Value="@Contact.LastName" Label="Last Name" Outlined="true" />
+            </div>
+            <div class="contact-details-field">
+                <MatTextField @bind-Value="@Contact.EmailAddress" Label="Email Address" Outlined="true"  />
+                <MatTextField @bind-Value="@Contact.PhoneNumber" Label="Phone Number" Outlined="true" />
+            </div>
+            <div class="contact-details-field home-address">
+                <MatTextField @bind-Value="@Contact.HomeAddress" Label="Home Address" TextArea="true" FullWidth="true"
+                     Attributes="@(new Dictionary<string, object>{ ["rows"] = 5 })" />
+            </div>
+            <div class="contact-details-field">
+                <MatDatePicker @bind-Value="@Contact.DateOfBirth" Label="Date of Birth"></MatDatePicker>
+            </div>
+            <div class="contact-details-field notes">
+                <MatTextField @bind-Value="@Contact.Notes" Label="Note" TextArea="true" FullWidth="true"
+                     Attributes="@(new Dictionary<string, object>{ ["rows"] = 5 })" />
+            </div>
+
+            <div class="contact-details-buttons">
+                <MatButton Raised="true" @onclick="Save">Save</MatButton>
+            </div>
+
+            @if(!(NewContact ?? false))
+            {
+                <div class="contact-details-buttons">
+                    <MatButton Raised="true" @onclick="Delete">Delete</MatButton>
+                </div>
+            }
+
+            <div class="contact-details-buttons">
+                <MatButtonLink Href="/" Raised="true">Cancel</MatButtonLink>
+            </div>
+        </div>
+    </MatPaper>
+}
+
+@code {
+    [Parameter]
+    public ContactDisplayData? Contact { get; set; }
+
+    [Parameter]
+    public bool? NewContact { get; set; }
+
+    private async Task Save()
+    {
+        if(NewContact ?? false)
+        {
+            await contactService.CreateContact(Contact!);
+        }
+        else
+        {
+            await contactService.UpdateContact(Contact!);
+        }
+
+        RedirectHome();
+    }
+
+    private async Task Delete()
+    {
+        if(Contact!.ContactId != null)
+        {
+            await contactService.DeleteContact(Contact!.ContactId.Value);
+        }
+
+        RedirectHome();
+    }
+
+    private void RedirectHome()
+    {
+        NavManager.NavigateTo("/");
+    }
+}

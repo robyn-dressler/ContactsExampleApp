@@ -1,0 +1,23 @@
+﻿@page "/contact/new"
+@using ContactsExampleApp.Model.View
+@using ContactsExampleApp.Services.Abstract
+@inject IContactService contactService
+
+<h3>Contact Details</h3>
+
+@if(contact != null)
+{
+    <ContactDetail Contact="contact" NewContact="true" />
+}
+
+@code {
+    [Parameter]
+    public int ContactId { get; set; } = 0;
+
+    private ContactDisplayData? contact;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contact = new ContactDisplayData();
+    }
+}

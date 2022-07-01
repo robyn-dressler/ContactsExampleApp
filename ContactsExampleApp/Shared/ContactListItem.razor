@@ -1,0 +1,71 @@
+﻿@using ContactsExampleApp.Model.View
+@using ContactsExampleApp.Services.Abstract
+@inject IContactService contactService
+@inject NavigationManager NavManager
+
+@if(Contact != null) {
+
+    IList<MarkupString> textLines = new List<MarkupString>();
+    AddTextLine(Contact.EmailAddress, textLines);
+    AddTextLine(Contact.HomeAddress, textLines);
+    AddTextLine(Contact.PhoneNumber, textLines);
+
+
+    <div class="contact-list-item">
+        <MatCard>
+            <MatCardContent class="contact-list-item-content" @onclick="EditItem">
+                <div class="contact-list-item-content">
+                    <MatHeadline5>@Contact.DisplayName</MatHeadline5>
+                    @if(@Contact.Age != null)
+                    {
+                        <MatBody1><b>Age:</b> @Contact.Age</MatBody1>
+                    }
+                    <MatBody1>
+                        <b>Info:</b><br>
+                        @foreach(MarkupString line in textLines)
+                        {
+                            @line
+                        }
+                    </MatBody1>
+                </div>
+            </MatCardContent>
+            <MatCardActions>
+                <MatCardActionButtons>
+                    <MatButtonLink Href="@($"/contact/{Contact.ContactId}")">Edit</MatButtonLink>
+                    <MatButton @onclick="DeleteContact">Delete</MatButton>
+                </MatCardActionButtons>
+            </MatCardActions>
+        </MatCard>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public ContactDisplayData? Contact { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    private void AddTextLine(string? line, IList<MarkupString> textLines)
+    {
+        if(line != null)
+        {
+            MarkupString spacedLine = (MarkupString)(textLines.Count > 0 ? "<br>" + line  : line);
+            textLines.Add(spacedLine);
+        }
+    }
+
+    private async Task DeleteContact()
+    {
+        if(Contact != null && Contact.ContactId != null)
+        {
+            await contactService.DeleteContact(Contact.ContactId.Value);
+            await OnDelete.InvokeAsync(Contact.ContactId.Value);
+        }
+    }
+
+    private void EditItem()
+    {
+        NavManager.NavigateTo($"/contact/{Contact!.ContactId}");
+    }
+}

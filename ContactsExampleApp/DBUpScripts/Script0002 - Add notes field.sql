@@ -1,0 +1,1 @@
+﻿ALTER TABLE Contact ADD Notes NVARCHAR(4000);

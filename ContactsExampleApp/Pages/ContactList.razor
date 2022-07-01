@@ -1,0 +1,41 @@
+﻿@page "/"
+@using ContactsExampleApp.Model.View
+@using ContactsExampleApp.Services.Abstract
+@inject IContactService contactService
+
+<PageTitle>Contact List</PageTitle>
+<MatHeadline4>Contact List</MatHeadline4>
+<MatButtonLink Href="/contact/new" Raised="true">Add Contact</MatButtonLink>
+
+@if(contacts == null)
+{
+    <div>Loading contacts...</div>
+}
+else
+{
+    <div class="contact-list">
+        @foreach(ContactDisplayData contact in contacts)
+        {
+            <ContactListItem Contact="contact" OnDelete="@RemoveContact" />
+        }
+    </div>
+}
+
+@code {
+    private IList<ContactDisplayData>? contacts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadContacts();
+    }
+
+    private async Task LoadContacts()
+    {
+        contacts = await contactService.GetAllContacts();
+    }
+
+    private void RemoveContact(int contactId)
+    {
+        contacts = contacts.Where(c => c.ContactId != contactId).ToList();
+    }
+}
